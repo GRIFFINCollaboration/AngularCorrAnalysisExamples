@@ -1,0 +1,25 @@
+The items in this directory are intended as examples of how to code an angular correlation analysis using Method 2 (as identified in the GRIFFIN AC NIM). They are minimal working examples that should run correctly out of the box *for the example data provided* in the ROOT file.
+- JKS, 2 August 2018
+------------------------------------------------
+To run:
+   - Use GRSISort to open the ROOT file:
+     > grsisort hsts2013_586_noW14.root
+   - Execute the RunMethod2.C script:
+     > .x RunMethod2.C
+This will produce a file (results.txt) of five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, chi^2 (not reduced).
+------------------------------------------------
+Detailed file information
+
+hsts2013_586_noW14.root - a ROOT file of simulated Z-distributions and data angular correlations for 47Ca. The simulations were run for the 586-2013 keV cascade, and data is provided for the 586-2013 keV and 565-2013 keV cascades. (I assume that the Z-distributions will not change significantly when changing the energy from 586 keV to 565 keV.) Histograms and graphs of the Z-distributions are both included.
+
+Method2_a2a4.C - a macro file with the functions necessary to fit a data AC with linear combinations of Z-distributions and extract the best fit of a2/a4 (unconstrained). This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The principal function, Method2_a2a4, needs to be passed the data AC histogram, the Z0 simulated AC histogram, the Z2 simulated AC histogram, the Z4 simulated histogram, and a Boolean to create and display figures (or not). This file should work for almost any experiment and cascade with minimal modification (mostly of SetupAC). It will print out the best fit a2/a4, as well as the covariance matrix for that fit - a2 and a4 are not necessarily independent in this fit.
+
+Method2_mixing.C - a macro file with the functions necessary to fit a data AC with linear combinations of Z-distributions and extract value of chi^2 for specified physics conditions. This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The Method2_mixing function will need to be heavily modified for individual cascades, which will likely have different known physics and different desired physics output. The principal function, Method2_mixing, needs to be passed the data AC histogram, the Z0 simulated AC histogram, the Z2 simulated AC histogram, the Z4 simulated histogram, and a filename for the chi^2 vs. mixing ratio output. It will output a file of chi^2 values for given physics inputs. In the example, all three spins are known, but neither mixing ratio is. The output is five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, and chi^2 (unreduced).
+
+Method4_a2a4.C - a macro file with the functions necessary to fit a data AC with a Legendre polynomial and convert the bare c2/c4 coeffients to physically-relevant a2/a4 (unconstrained). This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The principal function, Method4_a2a4, needs to be passed the data AC in TGraphAsymmErrors form, with an x-axis of cos(theta), beta/gamma values and associated errors, and a Boolean to create and display figures (or not). This file should work for almost any experiment and cascade with minimal modification (mostly of SetupAC). It will print out the best fit a2/a4, as well as the covariance matrix for that fit - a2 and a4 are not necessarily independent in this fit.
+
+Method4_mixing.C - a macro file with the functions necessary to fit a data AC with a Legendre polynomial and extract value of chi^2 for specified physics conditions. This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The Method4_mixing function will need to be heavily modified for individual cascades, which will likely have different known physics and different desired physics output. The principal function, Method4_mixing, needs to be passed the data AC in TGraphAsymmErrors form, with an x-axis of cos(theta), beta/gamma values and associated errors, and a filename for the chi^2 vs. mixing ratio output. It will output a file of chi^2 values for given physics inputs. In the example, all three spins are known, but neither mixing ratio is. The output is five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, and chi^2 (unreduced).
+
+RunMethod2.C - an executable macro file with the necessary commands for loading the histograms into memory, loading the functions from a Method2 macro file, and executing the Method2 macro.
+
+RunMethod4.C - an executable macro file with the necessary commands for making a TGraphAsymmErrors from the data histogram, loading the functions from a Method4 macro file, and executing the Method4 macro.
