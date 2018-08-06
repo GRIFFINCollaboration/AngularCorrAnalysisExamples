@@ -185,12 +185,12 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
    // a_2 value also requires a larger a_4 value. this would be a positive correlation.
    // the full covariance matrix deals with A_0, a_2, and a_4,
    // but we only care about a_2 and a_4, so we only extract some elements.
-	double *covarmatrixZ = minuitZ->GetCovarianceMatrix();
 	TMatrixD matrixZ(2,2);
-	matrixZ[0][0] = covarmatrixZ[4];
-	matrixZ[0][1] = covarmatrixZ[5];
-	matrixZ[1][0] = covarmatrixZ[7];
-	matrixZ[1][1] = covarmatrixZ[8];
+   for (int i=0;i<2;i++) {
+      for (int j=0;j<2;j++) {
+         matrixZ[i][j] = minuitZ->GetCovarianceMatrixElement(i+1,j+1);
+      }
+   }
    cout <<"---------- Covariance matrix ----------" <<endl;
    matrixZ.Print();
    cout <<"---------------------------------------" <<endl;
@@ -303,6 +303,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
       // sized pads: a larger one (pads[1]) for the data and sim
       // and a smaller one (pads[0]) below that for the residual.
    	TCanvas* c1b = new TCanvas("c2","Z-distribution fit",500,500);
+      TPad* pads[2];
    	pads[0] = new TPad("pad0","pad0",0,0,1,0.3);
    	pads[1] = new TPad("pad1","pad1",0,0.3,1,1);
    	pads[1]->SetBottomMargin(0);
