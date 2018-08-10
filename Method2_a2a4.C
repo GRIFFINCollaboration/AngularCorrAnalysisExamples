@@ -133,7 +133,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
    Method2Fit->SetParNames("A_{0}","a_{2}","a_{4}");
    Method2Fit->SetParameters(1,0.5,0.5);
    acD->Fit(Method2Fit,"QN0","",-1,1); // if you want to see the results printed, remove the Q option
-   Method2Fit->SetParameter(0,1);
+   Method2Fit->SetParameter(0,hD->GetMaximum()/Z0->GetMaximum()); // this sets the scale appropriately initially
 
    // -------------------------------------------------------------------//
    //                                Fitting
