@@ -192,8 +192,8 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
    	pt_Z->SetTextSize(20);
    	pt_Z->SetFillStyle(0);
    	pt_Z->SetBorderSize(0);
-   	pt_Z->AddText(Form("a_{2} = %f #pm %f",minParams[1],parErrors[1]));
-   	pt_Z->AddText(Form("a_{4} = %f #pm %f",minParams[2],parErrors[2]));
+   	pt_Z->AddText(Form("a_{2} = %f #pm %f",a2,a2err));
+   	pt_Z->AddText(Form("a_{4} = %f #pm %f",a4,a4err));
    	pt_Z->AddText(Form("#chi^{2}/NDF = %.2f",(TMath::Nint(Zchi2/ndf * 100) / 100.0)));
    
       // making the residual plot
