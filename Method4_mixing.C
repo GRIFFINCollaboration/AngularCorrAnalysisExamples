@@ -195,7 +195,6 @@ void Method4mixing(TGraphAsymmErrors* graph, double beta, double betaerr, double
    TF1 *Method4Fit = new TF1("Method4Fit",TGRSIFunctions::LegendrePolynomial,-1,1,3);
    Method4Fit->SetParNames("A_{0}","c_{2}","c_{4}");
    Method4Fit->SetParameters(1,0.5,0.5);
-   TFitResultPtr result;
 
    // -------------------------------------------------------------------//
    //                         Physics setup
@@ -270,7 +269,7 @@ void Method4mixing(TGraphAsymmErrors* graph, double beta, double betaerr, double
          // fix a2 in Method4Fit
          Method4Fit->FixParameter(1,c2);
          // fit scaling factor to data
-         result = graph->Fit(Method4Fit,"QN0EMRS","",-1,1);
+         graph->Fit(Method4Fit,"QN0ERS","",-1,1);
          // extract chi^2
          Zchi2 = Method4Fit->GetChisquare();
          // output to file
