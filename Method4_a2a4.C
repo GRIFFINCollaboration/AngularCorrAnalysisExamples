@@ -157,6 +157,10 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
   //                   Convert from c2/c4 --> a2/a4
   //                      and do error analysis
   // -------------------------------------------------------------------//
+  // Error on a2,a4 parameters are given by the sqrt of the diagonal 
+  // elements of the coviarance matrix defined in Eq. 27 of the NIM paper.
+  // - ASC 15 August 2018
+  // -------------------------------------------------------------------//
 
   // par[1] is c2, par[2] is c4
   double a2 = minParams[1]/beta;
