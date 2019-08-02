@@ -1,6 +1,6 @@
 {
    // load library
-   gROOT->ProcessLine(".L Method2.C");
+   gROOT->ProcessLine(".L AnalysisFunctions.C");
 
    // pull histograms from file
    TH1D* data = (TH1D*) gFile->Get("ac_2013_586");
@@ -15,6 +15,6 @@
    if (!Z4hst) { cout <<"Z4 histogram not found. Exiting..." <<endl; break; }
    // if all found, continue...
 
-   Method2a2a4(data,Z0hst,Z2hst,Z4hst,false,false,true); // boolean order is: folded, fixa4, visualization
-//   Method2mixing(ac_2013_586,Z0hst_noW14,Z2hst_noW14,Z4hst_noW14,"results2.txt",1,3,5);
+//   Method2a2a4(data,Z0hst,Z2hst,Z4hst,false,false,true); // boolean order is: folded, fixa4, visualization
+   Method2mixing(ac_2013_586,Z0hst_noW14,Z2hst_noW14,Z4hst_noW14,"results2.txt",1,3,7);
 }
