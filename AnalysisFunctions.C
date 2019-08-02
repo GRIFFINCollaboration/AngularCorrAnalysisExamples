@@ -403,11 +403,12 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, 
    	Zac->SetMarkerColor(kRed);
    	Zac->SetLineColor(kRed);
    	Zac->SetFillColor(kRed);
-   	Zac->GetXaxis()->SetRangeUser(-1.1,1.1);
+   	Zac->GetXaxis()->SetLimits(-1,1);
    	multi_Zplot->Add(Zac,"l3"); // the l3 option paints the histogram as a filled contour between the upper and lower error bars
 
    	acD->SetMarkerStyle(8);
    	multi_Zplot->Add(acD,"p");
+
    	multi_Zplot->SetTitle(
    			";;Normalized Counts;"
    			);
@@ -440,6 +441,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, 
    			"cos(#theta);"
    			"Normalized Counts;"
    		      );
+      Zres->GetXaxis()->SetLimits(-1,1);
    
       // this canvas is prepared specially for two differently
       // sized pads: a larger one (pads[1]) for the data and sim
@@ -465,6 +467,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, 
    
    	pads[1]->cd();
       multi_Zplot->Draw("ap");
+      multi_Zplot->GetXaxis()->SetLimits(-1,1);
    	pt_Z->Paint("NDC");
       c1b->Modified();
       c1b->Update();
@@ -500,7 +503,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, 
    	Zres->GetXaxis()->CenterTitle(kTRUE);
    	Zres->GetXaxis()->SetTickLength(0.07);
    	pads[0]->SetTicks(1,1);
-   	TLine* line = new TLine(-1.1,0,1.1,0);
+   	TLine* line = new TLine(-1,0,1,0);
    	line->Draw("same");
    }
 }
@@ -744,6 +747,7 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
     graph->SetTitle(
 		    ";;Normalized Counts;"
 		    );
+    graph->GetXaxis()->SetLimits(-1,1);
    
     // This text box will display the fit statistics
     TPaveText* pt_Z = new TPaveText(0.37,0.5,0.8,0.8);
@@ -776,6 +780,7 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
 		   "cos(#theta);"
 		   "Normalized Counts;"
 		   );
+    Zres->GetXaxis()->SetLimits(-1,1);
    
     // this canvas is prepared specially for two differently
     // sized pads: a larger one (pads[1]) for the data and sim
@@ -836,7 +841,7 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
     Zres->GetXaxis()->CenterTitle(kTRUE);
     Zres->GetXaxis()->SetTickLength(0.07);
     pads[0]->SetTicks(1,1);
-    TLine* line = new TLine(-1.1,0,1.1,0);
+    TLine* line = new TLine(-1,0,1,0);
     line->Draw("same");
   }
 }
