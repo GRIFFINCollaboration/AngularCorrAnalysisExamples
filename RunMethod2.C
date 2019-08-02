@@ -15,6 +15,6 @@
    if (!Z4hst) { cout <<"Z4 histogram not found. Exiting..." <<endl; break; }
    // if all found, continue...
 
-//   Method2a2a4(data,Z0hst,Z2hst,Z4hst,false,false,true); // boolean order is: folded, fixa4, visualization
-   Method2mixing(ac_2013_586,Z0hst_noW14,Z2hst_noW14,Z4hst_noW14,"results2.txt",1,3,7);
+   Method2a2a4(data,Z0hst,Z2hst,Z4hst,false,false,true); // boolean order is: folded, fixa4, visualization
+//   Method2mixing(data,Z0hst,Z2hst,Z4hst,"results2.txt",1,3,7);
 }

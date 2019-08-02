@@ -1,24 +1,28 @@
 // ------------- Instructions -----------------------//
 // - In SetupAC, users should fill the vector arraynums with the crystal numbers that were present in the experiment.
 // - In SetupAC, users should fill the vector distances with the distances of the crystals that were present in the experiment.
+//
 // - The Method2a2a4 function needs histograms of:
 //    - data AC
 //    - Z0 simulated AC
 //    - Z2 simulated AC
 //    - Z4 simulated AC
+//
 // - In Method2mixing, users should include whatever physics information they have about the cascade.
-//   This could include spins, angular momenta, or mixing ratios. This function will change significantly
+//   This could include spins or mixing ratios. This function will change significantly
 //   depending on the physics of a given cascade.
 // - The Method2mixing function needs histograms of:
 //    - data AC
 //    - Z0 simulated AC
 //    - Z2 simulated AC
 //    - Z4 simulated AC
+// 
 // - The Method4a2a4 function needs TGraphAsymmErrors of the data AC, with x-axis of cos(theta).
 // - The Method4a2a4 function needs beta/gamma values and associated errors. These will be specific to the energies
 //   of the particular cascade.
+//
 // - In Method4mixing, users should include whatever physics information they have about the cascade.
-//   This could include spins, angular momenta, or mixing ratios. This function will change significantly
+//   This could include spins or mixing ratios. This function will change significantly
 //   depending on the physics of a given cascade.
 // - The Method4mixing function needs TGraphAsymmErrors of the experimental AC with an x-axis of cos(theta).
 // - The Method4mixing function needs beta/gamma values and associated errors. These will be specific to the energies
@@ -566,6 +570,20 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
    if (l2a == 0) l2a = 1;
    int l2b = l2a + 1;
 
+   // run some quick checks on the mixing ratios
+   if ( (twoJhigh==0 && twoJmid==0) || (twoJmid==0 && twoJlow==0) ) {
+      printf("!!!!!!!!!!!!!!! ERROR !!!!!!!!!!!!!!!\nCan't have gamma transition between J=0 states.\nAborting...\n");
+      return;
+   } 
+   if (l1a==TMath::Abs(twoJhigh+twoJmid)/2) {
+      printf("!!!!!!!!!!!!!!! ALERT !!!!!!!!!!!!!!!\nOnly one angular momentum allowed for high->middle transition.\nThat mixing ratio (delta1) will be fixed at zero.\n!!!!!!!!!!!!! END ALERT !!!!!!!!!!!!!\n");
+      l1b = l1a;
+   }
+   if (l2a==TMath::Abs(twoJmid+twoJlow)/2) {
+      printf("!!!!!!!!!!!!!!! ALERT !!!!!!!!!!!!!!!\nOnly one angular momentum allowed for middle->low transition.\nThat mixing ratio (delta2) will be fixed at zero.\n!!!!!!!!!!!!! END ALERT !!!!!!!!!!!!!\n");
+      l2b = l2a;
+   }
+
    double delta1, delta2; // mixing ratios that I will vary
    double a2,a4; // a2 and a4 values
 
@@ -597,6 +615,10 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
    int steps2 = 100;
    double stepsize2 = (mixanglemax2-mixanglemin2)/double(steps2);
 
+   // if appropriate, constrain the delta values
+   if (l1a==l1b) { mixanglemin1 = 0; steps1 = 1; }
+   if (l2a==l2b) { mixanglemin2 = 0; steps2 = 1; }
+
 	double Zchi2, edm, errdef;
 	int nvpar, nparx;
    ofstream outfile;
@@ -604,7 +626,6 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
    for (int i=0;i<steps1;i++) {
       double mixangle1 = mixanglemin1 + i*stepsize1;
       double delta1 = TMath::Tan(mixangle1);
-      if (i%10==0) cout <<i <<"/" <<steps1 <<endl;
       if (debug) cout <<mixangle1 <<"\t" <<delta1 <<endl;
       for (int j=0;j<steps2;j++) {
          double mixangle2 = mixanglemin2 + j*stepsize2;
@@ -866,6 +887,20 @@ void Method4mixing(TGraphAsymmErrors* graph, double beta, double betaerr, double
    if (l2a == 0) l2a = 1;
    int l2b = l2a + 1;
 
+   // run some quick checks on the mixing ratios
+   if ( (twoJhigh==0 && twoJmid==0) || (twoJmid==0 && twoJlow==0) ) {
+      printf("!!!!!!!!!!!!!!! ERROR !!!!!!!!!!!!!!!\nCan't have gamma transition between J=0 states.\nAborting...\n");
+      return;
+   } 
+   if (l1a==TMath::Abs(twoJhigh+twoJmid)/2) {
+      printf("!!!!!!!!!!!!!!! ALERT !!!!!!!!!!!!!!!\nOnly one angular momentum allowed for high->middle transition.\nThat mixing ratio (delta1) will be fixed at zero.\n!!!!!!!!!!!!! END ALERT !!!!!!!!!!!!!\n");
+      l1b = l1a;
+   }
+   if (l2a==TMath::Abs(twoJmid+twoJlow)/2) {
+      printf("!!!!!!!!!!!!!!! ALERT !!!!!!!!!!!!!!!\nOnly one angular momentum allowed for middle->low transition.\nThat mixing ratio (delta2) will be fixed at zero.\n!!!!!!!!!!!!! END ALERT !!!!!!!!!!!!!\n");
+      l2b = l2a;
+   }
+
    double delta1, delta2; // mixing ratios that I will vary
    double a2,a4,a2err,a4err; // a2 and a4 values
    double c2,c4,c2err,c4err; // c2 and c4 values
@@ -897,6 +932,10 @@ void Method4mixing(TGraphAsymmErrors* graph, double beta, double betaerr, double
    double mixanglemax2 = TMath::Pi()/2;
    int steps2 = 100;
    double stepsize2 = (mixanglemax2-mixanglemin2)/double(steps2);
+
+   // if appropriate, constrain the delta values
+   if (l1a==l1b) { mixanglemin1 = 0; steps1 = 1; }
+   if (l2a==l2b) { mixanglemin2 = 0; steps2 = 1; }
 
 	double Zchi2;
    ofstream outfile;
