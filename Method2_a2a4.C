@@ -102,7 +102,7 @@ void ZFcn(Int_t & /*nPar*/, Double_t * /*grad*/ , Double_t &fval, Double_t *p, I
 }
 // ------------------------------------- //
 
-void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualization) {
+void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, bool fixa4, bool visualization) {
 
    // debug flag - set to true for more output
    bool debug = false;
@@ -127,11 +127,12 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
 
    // the Legendre polynomial function is defined on a domain of -1 to 1,
    // so we need to create a graph real quick.
-   TGraphAsymmErrors *acD = ac->CreateGraphFromHst(hD,false,false);
+   TGraphAsymmErrors *acD = ac->CreateGraphFromHst(hD,folded,false);
 
    TF1 *Method2Fit = new TF1("Method2Fit",TGRSIFunctions::LegendrePolynomial,-1,1,nfitpars);
    Method2Fit->SetParNames("A_{0}","a_{2}","a_{4}");
    Method2Fit->SetParameters(1,0.5,0.5);
+   if (fixa4) Method2Fit->FixParameter(2,0);
    acD->Fit(Method2Fit,"QN0","",-1,1); // if you want to see the results printed, remove the Q option
    Method2Fit->SetParameter(0,hD->GetMaximum()/Z0->GetMaximum()); // this sets the scale appropriately initially
 
@@ -148,6 +149,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
 	for (int i = 0; i < nfitpars; ++i) {
 		minuitZ->SetParameter(i, Method2Fit->GetParName(i), Method2Fit->GetParameter(i), 0.0001, -10, 10); // arguments are parameter number, parameter name, parameter initial value, value error, value minimum, and value maximum
 	}
+   if (fixa4) { minuitZ->FixParameter(2); }
 	minuitZ->SetFCN(ZFcn);
 	double arglist[100];
 	arglist[0] = 0;
@@ -178,6 +180,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
    // the next three lines print results
 	minuitZ->PrintResults(1,Zchi2);
    cout <<"NDF = " <<ndf <<endl;
+   cout <<"Reduced chi^2 is " <<Zchi2/ndf <<endl;
 	if(debug == true){std::cout << "Zchi2 is : " << Zchi2  << std::endl;}
 
    // the covariance matrix tells us how related our fitted parameters are.
@@ -256,7 +259,7 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool visualiz
       // multi_Zplot will have the acD (data) and Zac (simulated) TGraphs
    	TMultiGraph* multi_Zplot = new TMultiGraph();
 
-   	TGraphAsymmErrors *Zac = ac->CreateGraphFromHst(Z,false,false);
+   	TGraphAsymmErrors *Zac = ac->CreateGraphFromHst(Z,folded,false);
    	Zac->SetMarkerStyle(8);
    	Zac->SetMarkerColor(kRed);
    	Zac->SetLineColor(kRed);

@@ -100,7 +100,7 @@ void ZFcn(Int_t & /*nPar*/, Double_t * /*grad*/ , Double_t &fval, Double_t *p, I
 }
 // ------------------------------------- //
 
-void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double gamma, double gammaerr, bool visualization=false) {
+void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double gamma, double gammaerr, bool fixa4, bool visualization=false) {
 
   // debug flag - set to true for more output
   bool debug = false;
@@ -117,6 +117,7 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
   TF1 *Method4Fit = new TF1("Method4Fit",TGRSIFunctions::LegendrePolynomial,-1,1,3);
   Method4Fit->SetParNames("A_{0}","c_{2}","c_{4}");
   Method4Fit->SetParameters(1,0.5,0.5);
+  if (fixa4) Method4Fit->FixParameter(2,0);
   TFitResultPtr result;
   result = graph->Fit(Method4Fit,"EMRS","",-1,1);
 
@@ -155,14 +156,6 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
   // -------------------------------------------------------------------//
   //                   Convert from c2/c4 --> a2/a4
   //                      and do error analysis
-  // -------------------------------------------------------------------//
-  // We'll do this with the user-supplied beta and gamma values.
-  // Note: This is not complete!!! What more do we need?
-  // -JKS, 2 August 2018
-  //
-  // Error on a2,a4 parameters are given by the sqrt of the diagonal 
-  // elements of the coviarance matrix defined in Eq. 27 of the NIM paper.
-  // - ASC 15 August 2018
   // -------------------------------------------------------------------//
 
   // par[1] is c2, par[2] is c4

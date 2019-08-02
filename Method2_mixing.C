@@ -224,7 +224,7 @@ double calculate_a4(double j1,double j2,double j3,double l1a,double l1b,double l
 }
 // ------------------------------------- //
 
-void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char* outputfile) {
+void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char* outputfile, int twoJhigh, int twoJmid, int twoJlow) {
 
    // debug flag - set to true for more output
    bool debug = false;
@@ -272,28 +272,24 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
    // j1 is the spin of the highest level
    // j2 is the spin of the middle level
    // j3 is the spin of the bottom level
-   double j1 = 0.5;
-   double j2 = 1.5;
-   double j3 = 3.5;
+   double j1 = 0.5*twoJhigh;
+   double j2 = 0.5*twoJmid;
+   double j3 = 0.5*twoJlow;
    // l1 is the transition between j1 and j2
    // a is the lowest allowed spin
    // b is the mixing spin
-   double l1a = 1;
-   double l1b = 2;
+   int l1a = TMath::Abs(twoJhigh-twoJmid)/2;
+   if (l1a == 0) l1a = 1;
+   int l1b = l1a + 1;
    // l2 is the transition between j2 and j3
    // a is the lowest allowed spin
    // b is the mixing spin
-   double l2a = 2;
-   double l2b = 3;
+   int l2a = TMath::Abs(twoJmid-twoJlow)/2;
+   if (l2a == 0) l2a = 1;
+   int l2b = l2a + 1;
 
    double delta1, delta2; // mixing ratios that I will vary
    double a2,a4; // a2 and a4 values
-
-   // in this example, I happen to know that a4 is always zero because j2<2
-   // the following lines will fix that value
-   a4 = 0;
-	minuitZ->SetParameter(2, "a_{4}", a4, 0.0001, -10, 10); // arguments are parameter number, parameter name, parameter initial value, value error, value minimum, and value maximum
-   minuitZ->FixParameter(2);
 
    // -------------------------------------------------------------------//
    //                       Constrained fitting
@@ -310,20 +306,30 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
 
    // delta runs from -infinity to infinity (unless constrained by known physics)
    // in this case, it then makes more sense to sample evenly from tan^{-1}(delta)
-   double mixanglemin = -TMath::Pi()/2;
-   double mixanglemax = TMath::Pi()/2;
-   int steps = 100;
-   double stepsize = (mixanglemax-mixanglemin)/double(steps);
+   // The next few lines are where you may want to include limits to significantly speed up calculations
+   // mixing for the high-middle transition
+   double mixanglemin1 = -TMath::Pi()/2;
+   double mixanglemax1 = TMath::Pi()/2;
+   int steps1 = 100;
+   double stepsize1 = (mixanglemax1-mixanglemin1)/double(steps1);
+   // mixing for the middle-low transition
+   // to constrain this to zero, set mixanglemin2 to 0, mixanglemax2 to 1; and steps2 to 1
+   double mixanglemin2 = -TMath::Pi()/2;
+   double mixanglemax2 = TMath::Pi()/2;
+   int steps2 = 100;
+   double stepsize2 = (mixanglemax2-mixanglemin2)/double(steps2);
+
 	double Zchi2, edm, errdef;
 	int nvpar, nparx;
    ofstream outfile;
    outfile.open(outputfile);
-   for (int i=0;i<steps;i++) {
-      double mixangle1 = mixanglemin + i*stepsize;
+   for (int i=0;i<steps1;i++) {
+      double mixangle1 = mixanglemin1 + i*stepsize1;
       double delta1 = TMath::Tan(mixangle1);
+      if (i%10==0) cout <<i <<"/" <<steps1 <<endl;
       if (debug) cout <<mixangle1 <<"\t" <<delta1 <<endl;
-      for (int j=0;j<steps;j++) {
-         double mixangle2 = mixanglemin + j*stepsize;
+      for (int j=0;j<steps2;j++) {
+         double mixangle2 = mixanglemin2 + j*stepsize2;
          double delta2 = TMath::Tan(mixangle2);
          if (debug) cout <<"\t" <<mixangle2 <<"\t" <<delta2 <<endl;
          // calculate a2
@@ -332,6 +338,12 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
          minuitZ->ReleaseParameter(1);      
 	      minuitZ->SetParameter(1, "a_{2}", a2, 0.0001, -10, 10); // arguments are parameter number, parameter name, parameter initial value, value error, value minimum, and value maximum
          minuitZ->FixParameter(1);
+         // calculate a4
+         a4 = calculate_a4(j1,j2,j3,l1a,l1b,l2a,l2b,delta1,delta2);
+         // fix a4 in minuitZ
+         minuitZ->ReleaseParameter(2);      
+	      minuitZ->SetParameter(2, "a_{4}", a4, 0.0001, -10, 10); // arguments are parameter number, parameter name, parameter initial value, value error, value minimum, and value maximum
+         minuitZ->FixParameter(2);
          // fit scaling factor to data
 	      minuitZ->ExecuteCommand("MIGRAD",arglist,2); // arguments here are minimization type (MIGRAD, SIMPLEX, MINIMIZE, SCAN, SEEK, MINOS), argument list, and number of arguments
          // extract chi^2
