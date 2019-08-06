@@ -626,6 +626,7 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
 	int nvpar, nparx;
    ofstream outfile;
    outfile.open(outputfile);
+   printf("Fitting %i steps for mixing ratio 1 and %i steps for mixing ratio 2.\n",steps1,steps2);
    for (int i=0;i<steps1;i++) {
       double mixangle1 = mixanglemin1 + i*stepsize1;
       double delta1 = TMath::Tan(mixangle1);
@@ -646,6 +647,8 @@ void Method2mixing(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, const char*
          minuitZ->ReleaseParameter(2);      
 	      minuitZ->SetParameter(2, "a_{4}", a4, 0.0001, -10, 10); // arguments are parameter number, parameter name, parameter initial value, value error, value minimum, and value maximum
          minuitZ->FixParameter(2);
+         // do this next line so that we initialize the fit properly and don't get error messages
+	      if (i==0 && j==0) minuitZ->ExecuteCommand("SIMPLEX",arglist,2); // arguments here are minimization type (MIGRAD, SIMPLEX, MINIMIZE, SCAN, SEEK, MINOS), argument list, and number of arguments
          // fit scaling factor to data
 	      minuitZ->ExecuteCommand("MIGRAD",arglist,2); // arguments here are minimization type (MIGRAD, SIMPLEX, MINIMIZE, SCAN, SEEK, MINOS), argument list, and number of arguments
          // extract chi^2
@@ -945,6 +948,7 @@ void Method4mixing(TGraphAsymmErrors* graph, double beta, double betaerr, double
 	double Zchi2;
    ofstream outfile;
    outfile.open(outputfile);
+   printf("Fitting %i steps for mixing ratio 1 and %i steps for mixing ratio 2.\n",steps1,steps2);
    for (int i=0;i<steps1;i++) {
       double mixangle1 = mixanglemin1 + i*stepsize1;
       double delta1 = TMath::Tan(mixangle1);
