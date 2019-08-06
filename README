@@ -1,13 +1,13 @@
-The items in this directory are intended as examples of how to code an angular correlation analysis using Method 2 (as identified in the GRIFFIN AC NIM). They are minimal working examples that should run correctly out of the box *for the example data provided* in the ROOT file.
-- JKS, 2 August 2018
+The items in this directory are intended as examples of how to code an angular correlation analysis using Methods 2 and 4 (as identified in the GRIFFIN AC NIM). They are minimal working examples that should run correctly out of the box *for the example data provided* in the ROOT file.
+- JKS, 6 August 2019
 ------------------------------------------------
 ------------------------------------------------
 To run:
    - Use GRSISort to open the ROOT file:
-     > grsisort hsts2013_586_noW14.root
+     > grsisort histograms.root
    - Execute the RunMethod2.C script:
      > .x RunMethod2.C
-This will produce a file (results.txt) of five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, chi^2 (not reduced).
+This will run a Method2, a2/a4 analysis. More ways to run are detailed in the PDF.
 ------------------------------------------------
 ------------------------------------------------
 Example terminal output from Method 2, a2/a4 analysis:
@@ -34,14 +34,7 @@ NDF = 43
 ------------------------------------------------
 Example terminal output from Method 2, mixing ratio analysis:
 
- MINUIT WARNING IN HESSE   
- ============== Negative diagonal element 1 in Error Matrix
- MINUIT WARNING IN HESSE   
- ============== 3.55318e+10 added to diagonal of error matrix
- MINUIT WARNING IN HESSE   
- ============== Negative diagonal element 1 in Error Matrix
- MINUIT WARNING IN HESSE   
- ============== 2.86777e+13 added to diagonal of error matrix
+Fitting 100 steps for mixing ratio 1 and 100 steps for mixing ratio 2.
 
 ------------------------------------------------
 ------------------------------------------------
@@ -72,20 +65,15 @@ a4: 0.00164448 +/- 0.000808937
 ------------------------------------------------
 Example terminal output from Method 4, mixing ratio analysis:
 
-(there is none)
+Fitting 100 steps for mixing ratio 1 and 100 steps for mixing ratio 2.
+
 ------------------------------------------------
 ------------------------------------------------
 Detailed file information
 
-hsts2013_586_noW14.root - a ROOT file of simulated Z-distributions and data angular correlations for 47Ca. The simulations were run for the 586-2013 keV cascade, and data is provided for the 586-2013 keV and 565-2013 keV cascades. (I assume that the Z-distributions will not change significantly when changing the energy from 586 keV to 565 keV.) Histograms and graphs of the Z-distributions are both included.
+AnalysisFunctions.C - a macro file with the functions necessary to fit a data AC with simulation using Method 2 or Method 4. This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data.
 
-Method2_a2a4.C - a macro file with the functions necessary to fit a data AC with linear combinations of Z-distributions and extract the best fit of a2/a4 (unconstrained). This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The principal function, Method2_a2a4, needs to be passed the data AC histogram, the Z0 simulated AC histogram, the Z2 simulated AC histogram, the Z4 simulated histogram, and a Boolean to create and display figures (or not). This file should work for almost any experiment and cascade with minimal modification (mostly of SetupAC). It will print out the best fit a2/a4, as well as the covariance matrix for that fit - a2 and a4 are not necessarily independent in this fit.
-
-Method2_mixing.C - a macro file with the functions necessary to fit a data AC with linear combinations of Z-distributions and extract value of chi^2 for specified physics conditions. This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The Method2_mixing function will need to be heavily modified for individual cascades, which will likely have different known physics and different desired physics output. The principal function, Method2_mixing, needs to be passed the data AC histogram, the Z0 simulated AC histogram, the Z2 simulated AC histogram, the Z4 simulated histogram, and a filename for the chi^2 vs. mixing ratio output. It will output a file of chi^2 values for given physics inputs. In the example, all three spins are known, but neither mixing ratio is. The output is five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, and chi^2 (unreduced).
-
-Method4_a2a4.C - a macro file with the functions necessary to fit a data AC with a Legendre polynomial and convert the bare c2/c4 coeffients to physically-relevant a2/a4 (unconstrained). This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The principal function, Method4_a2a4, needs to be passed the data AC in TGraphAsymmErrors form, with an x-axis of cos(theta), beta/gamma values and associated errors, and a Boolean to create and display figures (or not). This file should work for almost any experiment and cascade with minimal modification (mostly of SetupAC). It will print out the best fit a2/a4, as well as the covariance matrix for that fit - a2 and a4 are not necessarily independent in this fit.
-
-Method4_mixing.C - a macro file with the functions necessary to fit a data AC with a Legendre polynomial and extract value of chi^2 for specified physics conditions. This file (and specifically the SetupAC function) will need to be modified for the experimental setup used for the data. The Method4_mixing function will need to be heavily modified for individual cascades, which will likely have different known physics and different desired physics output. The principal function, Method4_mixing, needs to be passed the data AC in TGraphAsymmErrors form, with an x-axis of cos(theta), beta/gamma values and associated errors, and a filename for the chi^2 vs. mixing ratio output. It will output a file of chi^2 values for given physics inputs. In the example, all three spins are known, but neither mixing ratio is. The output is five columns: mixing ratio 1 bin, mixing ratio 1, mixing ratio 2 bin, mixing ratio 2, and chi^2 (unreduced).
+histograms.root - a ROOT file of simulated Z-distributions and data angular correlations for 47Ca. The simulations were run for the 586-2013 keV cascade, and data is provided for the 586-2013 keV and 565-2013 keV cascades. (I assume that the Z-distributions will not change significantly when changing the energy from 586 keV to 565 keV.) Histograms and graphs of the Z-distributions are both included.
 
 results2_example.txt - The output file that I get from running a mixing ratio analysis with Method 2. You can compare your output file to this to make sure that everything is running appropriately.
 
