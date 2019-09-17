@@ -435,7 +435,9 @@ void Method2a2a4(TH1* datahst, TH1* Z0hst, TH1* Z2hst, TH1* Z4hst, bool folded, 
          Zres->SetPointError(point,0,yerror[i]);
    	}
    	Zres->SetMarkerStyle(8);
-   	Zres->RemovePoint(0);
+	//line below commented out by JKS on 17 Sept 2019 after a bug report
+	//I can't remember why it was here in the first place
+   	//Zres->RemovePoint(0);
    	Zres->SetTitle(
    			""
    			"cos(#theta);"
@@ -777,7 +779,8 @@ void Method4a2a4(TGraphAsymmErrors* graph, double beta, double betaerr, double g
 	Zres->SetPointError(point,0,0,yerrlow,yerrhigh);
       }
     Zres->SetMarkerStyle(8);
-    Zres->RemovePoint(0);
+    // line below commented out by JKS on 17 Sept 2019 because it is removing a point and I can't remember why the line was here in the first place.
+    //Zres->RemovePoint(0);
     Zres->SetTitle(
 		   ""
 		   "cos(#theta);"
